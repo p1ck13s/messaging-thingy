@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>iFruit Messages</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #111;
+}
+
+.phone {
+    width: 100%;
+    height: 100vh;
+    background: #eeeeee;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER */
+
+.header {
+    height: 58px;
+    flex-shrink: 0;
+    background: linear-gradient(#fafafa, #d8d8d8);
+    border-bottom: 1px solid #aaa;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+}
+
+.back {
+    color: #007aff;
+    font-size: 30px;
+    width: 35px;
+}
+
+.header-title {
+    flex: 1;
+    text-align: center;
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.compose {
+    color: #007aff;
+    font-size: 25px;
+    width: 35px;
+    text-align: right;
+}
+
+/* CONTACTS */
+
+.contacts {
+    flex: 1;
+    overflow-y: auto;
+    background: white;
+}
+
+.contact {
+    height: 73px;
+    display: flex;
+    align-items: center;
+    padding: 8px 13px;
+    border-bottom: 1px solid #ddd;
+}
+
+.contact:active {
+    background: #ddd;
+}
+
+.contact-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 21px;
+    font-weight: bold;
+    margin-right: 12px;
+}
+
+.mike {
+    background: linear-gradient(135deg, #222, #777);
+}
+
+.jake {
+    background: linear-gradient(135deg, #087cff, #52b5ff);
+}
+
+.contact-info {
+    flex: 1;
+}
+
+.contact-name {
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.preview {
+    margin-top: 3px;
+    color: #777;
+    font-size: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.arrow {
+    color: #aaa;
+    font-size: 23px;
+}
+
+/* CHAT */
+
+.chat {
+    display: none;
+    height: 100%;
+    flex-direction: column;
+    background: #eeeeee;
+}
+
+.chat-header {
+    height: 58px;
+    flex-shrink: 0;
+    background: linear-gradient(#fafafa, #d8d8d8);
+    border-bottom: 1px solid #aaa;
+    display: flex;
+    align-items: center;
+}
+
+.chat-back {
+    color: #007aff;
+    font-size: 31px;
+    width: 45px;
+    padding-left: 10px;
+}
+
+.chat-name {
+    flex: 1;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    margin-right: 45px;
+}
+
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+}
+
+.date {
+    text-align: center;
+    color: #888;
+    font-size: 11px;
+    margin-bottom: 12px;
+}
+
+.message {
+    max-width: 76%;
+    padding: 9px 13px;
+    margin-bottom: 7px;
+    border-radius: 18px;
+    font-size: 16px;
+    line-height: 1.3;
+    clear: both;
+    word-wrap: break-word;
+}
+
+.sent {
+    float: right;
+    background: #007aff;
+    color: white;
+    border-bottom-right-radius: 5px;
+}
+
+.received {
+    float: left;
+    background: #d5d5da;
+    color: black;
+    border-bottom-left-radius: 5px;
+}
+
+.clear {
+    clear: both;
+}
+
+.typing {
+    display: none;
+    height: 20px;
+    padding-left: 15px;
+    color: #888;
+    font-size: 12px;
+}
+
+/* MESSAGE INPUT */
+
+.input-area {
+    height: 53px;
+    background: #f7f7f7;
+    border-top: 1px solid #bbb;
+    padding: 7px;
+    display: flex;
+    align-items: center;
+}
+
+.input-display {
+    height: 38px;
+    flex: 1;
+    border: 1px solid #aaa;
+    border-radius: 20px;
+    background: white;
+    padding: 8px 14px;
+    font-size: 16px;
+    color: #333;
+    overflow: hidden;
+}
+
+.send {
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 50%;
+    margin-left: 7px;
+    background: #007aff;
+    color: white;
+    font-size: 18px;
+}
+
+/* CUSTOM KEYBOARD */
+
+.keyboard {
+    display: none;
+    background: #d1d3d8;
+    padding: 5px 3px 8px;
+    flex-shrink: 0;
+}
+
+.key-row {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 5px;
+}
+
+.key {
+    flex: 1;
+    height: 42px;
+    border: none;
+    border-radius: 5px;
+    background: #f8f8f8;
+    box-shadow: 0 1px 1px #888;
+    font-size: 18px;
+    color: #111;
+    touch-action: manipulation;
+}
+
+.key:active {
+    background: #bbb;
+    transform: scale(.96);
+}
+
+.wide {
+    flex: 1.5;
+}
+
+.space {
+    flex: 5;
+}
+
+.special {
+    background: #bfc1c6;
+    font-size: 14px;
+}
+
+/* Hide actual input */
+#hiddenInput {
+    position: fixed;
+    left: -1000px;
+    top: -1000px;
+    opacity: 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="phone">
+
+    <!-- CONTACT LIST -->
+
+    <div id="contacts" class="contacts">
+
+        <div class="header">
+            <div class="back">‹</div>
+            <div class="header-title">Messages</div>
+            <div class="compose">✎</div>
+        </div>
+
+        <div class="contact" onclick="openChat('Mike')">
+
+            <div class="contact-avatar mike">M</div>
+
+            <div class="contact-info">
+                <div class="contact-name">Mike</div>
+                <div class="preview" id="mikePreview">
+                    Dude what are you talking about
+                </div>
+            </div>
+
+            <div class="arrow">›</div>
+
+        </div>
+
+        <div class="contact" onclick="openChat('Jake')">
+
+            <div class="contact-avatar jake">J</div>
+
+            <div class="contact-info">
+                <div class="contact-name">Jake</div>
+                <div class="preview" id="jakePreview">
+                    Whatever dude
+                </div>
+            </div>
+
+            <div class="arrow">›</div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CHAT -->
+
+    <div id="chat" class="chat">
+
+        <div class="chat-header">
+            <div class="chat-back" onclick="closeChat()">‹</div>
+            <div class="chat-name" id="chatName">Mike</div>
+        </div>
+
+        <div id="messages" class="messages"></div>
+
+        <div id="typing" class="typing">
+            typing...
+        </div>
+
+        <div class="input-area">
+
+            <div
+                id="inputDisplay"
+                class="input-display"
+                onclick="showKeyboard()"
+            ></div>
+
+            <button class="send" onclick="sendMessage()">↑</button>
+
+        </div>
+
+        <!-- CUSTOM KEYBOARD -->
+
+        <div id="keyboard" class="keyboard">
+
+            <div class="key-row">
+                <button class="key" onclick="key('q')">Q</button>
+                <button class="key" onclick="key('w')">W</button>
+                <button class="key" onclick="key('e')">E</button>
+                <button class="key" onclick="key('r')">R</button>
+                <button class="key" onclick="key('t')">T</button>
+                <button class="key" onclick="key('y')">Y</button>
+                <button class="key" onclick="key('u')">U</button>
+                <button class="key" onclick="key('i')">I</button>
+                <button class="key" onclick="key('o')">O</button>
+                <button class="key" onclick="key('p')">P</button>
+            </div>
+
+            <div class="key-row">
+                <button class="key" onclick="key('a')">A</button>
+                <button class="key" onclick="key('s')">S</button>
+                <button class="key" onclick="key('d')">D</button>
+                <button class="key" onclick="key('f')">F</button>
+                <button class="key" onclick="key('g')">G</button>
+                <button class="key" onclick="key('h')">H</button>
+                <button class="key" onclick="key('j')">J</button>
+                <button class="key" onclick="key('k')">K</button>
+                <button class="key" onclick="key('l')">L</button>
+            </div>
+
+            <div class="key-row">
+                <button class="key special" onclick="key(' ')">⇧</button>
+                <button class="key" onclick="key('z')">Z</button>
+                <button class="key" onclick="key('x')">X</button>
+                <button class="key" onclick="key('c')">C</button>
+                <button class="key" onclick="key('v')">V</button>
+                <button class="key" onclick="key('b')">B</button>
+                <button class="key" onclick="key('n')">N</button>
+                <button class="key" onclick="key('m')">M</button>
+                <button class="key special" onclick="backspace()">⌫</button>
+            </div>
+
+            <div class="key-row">
+                <button class="key special" onclick="key('.')">123</button>
+                <button class="key" onclick="key(',')">,</button>
+                <button class="key space" onclick="key(' ')">space</button>
+                <button class="key" onclick="key('.')">.</button>
+                <button class="key special" onclick="sendMessage()">return</button>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<input id="hiddenInput" autocomplete="off">
+
+<script>
+
+let currentContact = "";
+let typedText = "";
+
+const conversations = {
+
+    Mike: [
+        ["sent", "yo mike"],
+        ["received", "what"],
+        ["sent", "i think i just figured something out"],
+        ["received", "what did you figure out"],
+        ["sent", "i forgot what i was gonna say"],
+        ["received", "dude"],
+        ["sent", "wait i remember"],
+        ["received", "ok..."]
+    ],
+
+    Jake: [
+        ["sent", "jake"],
+        ["received", "yeah"],
+        ["sent", "you ever just stare at your phone for no reason"],
+        ["received", "what"],
+        ["sent", "like you're not even doing anything"],
+        ["received", "are you drunk?"],
+        ["sent", "no"],
+        ["received", "whatever dude"]
+    ]
+
+};
+
+const replies = {
+
+    Mike: [
+        "ok..",
+        "what",
+        "dude",
+        "bro",
+        "whatever dude",
+        "are you serious",
+        "idk man",
+        "alright",
+        "what are you talking about"
+    ],
+
+    Jake: [
+        "ok",
+        "whatever dude",
+        "bro",
+        "what",
+        "are you drunk?",
+        "nah",
+        "idk",
+        "that's crazy",
+        "😭"
+    ]
+
+};
+
+function openChat(name) {
+
+    currentContact = name;
+    typedText = "";
+
+    document.getElementById("contacts").style.display = "none";
+    document.getElementById("chat").style.display = "flex";
+
+    document.getElementById("chatName").textContent = name;
+
+    const messages = document.getElementById("messages");
+
+    messages.innerHTML = '<div class="date">Today</div>';
+
+    conversations[name].forEach(msg => {
+        addMessage(msg[1], msg[0]);
+    });
+
+    updateInput();
+
+    messages.scrollTop = messages.scrollHeight;
+}
+
+function closeChat() {
+
+    document.getElementById("keyboard").style.display = "none";
+    document.getElementById("chat").style.display = "none";
+    document.getElementById("contacts").style.display = "block";
+
+}
+
+function addMessage(text, type) {
+
+    const messages = document.getElementById("messages");
+
+    const bubble = document.createElement("div");
+
+    bubble.className = "message " + type;
+    bubble.textContent = text;
+
+    messages.appendChild(bubble);
+
+    const clear = document.createElement("div");
+    clear.className = "clear";
+
+    messages.appendChild(clear);
+}
+
+function showKeyboard() {
+
+    document.getElementById("keyboard").style.display = "block";
+
+    setTimeout(() => {
+        document.getElementById("messages").scrollTop =
+            document.getElementById("messages").scrollHeight;
+    }, 50);
+
+}
+
+function key(letter) {
+
+    playClick();
+
+    typedText += letter;
+
+    updateInput();
+
+}
+
+function backspace() {
+
+    playClick();
+
+    typedText = typedText.slice(0, -1);
+
+    updateInput();
+
+}
+
+function updateInput() {
+
+    const display = document.getElementById("inputDisplay");
+
+    display.textContent = typedText;
+
+    if (typedText === "") {
+        display.textContent = "";
+    }
+
+}
+
+function sendMessage() {
+
+    if (typedText.trim() === "") return;
+
+    playClick();
+
+    const text = typedText.trim();
+
+    addMessage(text, "sent");
+
+    typedText = "";
+    updateInput();
+
+    const messages = document.getElementById("messages");
+
+    messages.scrollTop = messages.scrollHeight;
+
+    document.getElementById("typing").style.display = "block";
+
+    setTimeout(() => {
+
+        document.getElementById("typing").style.display = "none";
+
+        const list = replies[currentContact];
+
+        const response =
+            list[Math.floor(Math.random() * list.length)];
+
+        addMessage(response, "received");
+
+        messages.scrollTop = messages.scrollHeight;
+
+        document.getElementById(
+            currentContact.toLowerCase() + "Preview"
+        ).textContent = response;
+
+    }, 900 + Math.random() * 1200);
+
+}
+
+
+/* CLICK SOUND */
+
+let audioContext;
+
+function playClick() {
+
+    try {
+
+        if (!audioContext) {
+            audioContext =
+                new (window.AudioContext ||
+                window.webkitAudioContext)();
+        }
+
+        const oscillator =
+            audioContext.createOscillator();
+
+        const gain =
+            audioContext.createGain();
+
+        oscillator.type = "square";
+
+        oscillator.frequency.setValueAtTime(
+            180,
+            audioContext.currentTime
+        );
+
+        gain.gain.setValueAtTime(
+            0.025,
+            audioContext.currentTime
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            audioContext.currentTime + 0.035
+        );
+
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+
+        oscillator.start();
+
+        oscillator.stop(
+            audioContext.currentTime + 0.035
+        );
+
+    } catch (e) {}
+
+}
+
+</script>
+
+</body>
+</html>
